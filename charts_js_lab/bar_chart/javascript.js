@@ -20,7 +20,7 @@ var myChart = new Chart(ctx, {
                 display: true,
                 text: 'GDP per capita in 5 regions around the world',
                 font: {
-                    size: 18
+                    size: 36
                 }
             },
             subtitle: {
