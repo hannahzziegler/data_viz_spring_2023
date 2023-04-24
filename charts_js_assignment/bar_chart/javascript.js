@@ -32,7 +32,7 @@ var myChart = new Chart(ctx, {
             },
             title: {
                 display: true,
-                text: 'Bias Against Women in Top Global Media Outlets',
+                text: 'Bias against women in top global media outlets',
                 font: {
                     size: 30,
                     family: 'Open Sans'

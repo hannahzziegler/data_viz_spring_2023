@@ -404,7 +404,7 @@ var myChart = new Chart(ctx, {
       },
       title: {
         display: true,
-        text: 'Polarizing headlines and bias in top 50 U.S. media outlets',
+        text: "Polarization and bias toward women in U.S. media outlets' headlines",
         padding: 1,
         font: {
           size: 30,
@@ -413,7 +413,7 @@ var myChart = new Chart(ctx, {
       },
       subtitle: {
         display: true,
-        text: "America's 50 biggest news outlets mostly hover around a 10-40% bias and 30-60% polarization percentage based on a Pudding analysis of their headlines.",
+        text: "America's 50 biggest news outlets mostly hover around a 10-40% bias and 30-60% polarization percentage when writing headlines about women.",
         padding: 10,
         font: {
           size: 15,

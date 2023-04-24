@@ -58,7 +58,7 @@ var myChart = new Chart(ctx, {
         plugins: {
             title: {
                 display: true,
-                text: 'News outlet headline coverage themes across 4 countries',
+                text: 'Themes of women-related news headlines across 4 countries',
                 font: {
                     size: 30,
                     family: 'Open Sans'
@@ -66,7 +66,7 @@ var myChart = new Chart(ctx, {
             },
             subtitle: {
                 display: true,
-                text: "Data shows the freqency of a theme appearing in a headline for the top 50 news outlets in the world, which are each headquartered in one of four countries.",
+                text: "Data shows the freqency of a theme appearing in a headline for the top news outlets in the world, which are each headquartered in one of four countries.",
                 font: {
                     size: 15,
                     family: 'Open Sans'
