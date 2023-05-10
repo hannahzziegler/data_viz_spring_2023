@@ -5,12 +5,12 @@ A repository for work done in spring 2023 data visualization course at the Unive
 Final project note: My folder is a mess! So here are the relevant things for grading purposes:
 
 Flourish embeds:
-Overall Crab PopulationLine Chart: https://public.flourish.studio/visualisation/13629415/ 
-Maryland Heat Chart: https://public.flourish.studio/visualisation/13692755/ 
-Bay Pollution:
-* Sediment: https://public.flourish.studio/visualisation/13696183/
-* Nitrogen: https://public.flourish.studio/visualisation/13695885/
-* Phosphorus: https://public.flourish.studio/visualisation/13694979/
+* Overall Crab PopulationLine Chart: https://public.flourish.studio/visualisation/13629415/ 
+* Maryland Heat Chart: https://public.flourish.studio/visualisation/13692755/ 
+* Bay Pollution:
+  * Sediment: https://public.flourish.studio/visualisation/13696183/
+  * Nitrogen: https://public.flourish.studio/visualisation/13695885/
+  * Phosphorus: https://public.flourish.studio/visualisation/13694979/
 Sectors Pollution: https://public.flourish.studio/visualisation/13697348/
 River Loads: https://public.flourish.studio/visualisation/13705856/ 
 
