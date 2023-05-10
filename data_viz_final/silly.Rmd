@@ -1,0 +1,176 @@
+---
+title: "data_viz_cleaning"
+output: html_document
+date: "2023-05-03"
+---
+
+```{r setup, include=FALSE}
+
+library(tidyverse)
+install.packages("sf")
+library(sf)
+library(janitor)
+install.packages("tigris")
+library(tigris)
+install.packages("tidycensus")
+library(tidycensus)
+install.packages('rgdal')
+install.packages('spdplyr')
+install.packages('geojsonio')
+install.packages('rmapshaper')
+library(rgdal)
+library(geojsonio)
+library(rmapshaper)
+
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+
+dead_zones_shapefile <- st_read("dead_zones/Maryland_Chesapeake_Bay_Dead_Zones_-_Chesapeake_Bay_Dead_Zones/ENVL_ChesapeakeBayDeadZones_DNR.shp")
+
+counties <- counties() 
+
+md_counties <- counties %>%
+  filter(STATEFP == "24")
+
+md_counties %>%
+  ggplot() + 
+  geom_sf() + 
+  theme_minimal()
+
+dead_zones_shapefile %>%
+  ggplot() + 
+  geom_sf() + 
+  theme_minimal()
+
+ggplot() + 
+  geom_sf(data=md_counties) + 
+  geom_sf(data=dead_zones_shapefile) +
+  geom_point(size = .000001)
+  theme_minimal()
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+
+county_json <- geojson_json(md_counties)
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r pressure, echo=FALSE}
+
+nitrogen <- read_csv("nitrogen_pollution.csv")
+
+nitrogen <- nitrogen %>%
+  clean_names()
+
+nitrogen %>%
+  group_by(county) %>%
+  summarise(count = sum(total_n_2016_lb)) %>%
+  arrange(desc(count))
+
+tributary_basin_nitrogen <- nitrogen %>%
+  group_by(tributary_basin) %>%
+  summarise(count_1985 = sum(total_n_1985_lb), count_2007 = sum(total_n_2007_lb), count_2009 = sum(total_n_2009_lb), count_2010 = sum(total_n_2010_lb), count_2011 = sum(total_n_2011_lb), count_2012 = sum(total_n_2012_lb), count_2013 = sum(total_n_2013_lb), count_2014 = sum(total_n_2014_lb), count_2015 = sum(total_n_2015_lb), count_2016 = sum(total_n_2016_lb)) 
+
+nitrogen %>%
+  group_by(major_basin) %>%
+  summarise(count = sum(total_n_2016_lb)) %>%
+  arrange(desc(count))
+
+nitrogen %>%
+  filter(tributary_basin == "Patapsco/Back")
+
+nitrogen <- nitrogen %>%
+  drop_na()
+
+phosphorous <- read_csv('phosphorus_pollution.csv')
+
+phosphorous <- phosphorous %>%
+  clean_names() %>%
+  drop_na()
+
+tributary_basin_phosphorous <- phosphorous %>%
+  group_by(tributary_basin) %>%
+  summarise(count_1985 = sum(total_p_1985_lb), count_2007 = sum(total_p_2007_lb), count_2009 = sum(total_p_2009_lb), count_2010 = sum(total_p_2010_lb), count_2011 = sum(total_p_2011_lb), count_2012 = sum(total_p_2012_lb), count_2013 = sum(total_p_2013_lb), count_2014 = sum(total_p_2014_lb), count_2015 = sum(total_p_2015_lb), count_2016 = sum(total_p_2016_lb)) 
+
+phosphorous %>%
+  group_by(major_basin) %>%
+  summarise(count = sum(total_p_2016_lb)) %>%
+  arrange(desc(count))
+
+sediment <- read_csv("sediment_pollution.csv")
+
+sediment <- sediment %>%
+  clean_names() %>%
+  drop_na(total_sediment_2016_t)
+
+tributary_basin_sediment <- sediment %>%
+  group_by(tributary_basin) %>%
+  summarise(count_1985 = sum(total_sediment_1985_t), count_2007 = sum(total_sediment_2007_t), count_2009 = sum(total_sediment_2009_t), count_2010 = sum(total_sediment_2010_t), count_2011 = sum(total_sediment_2011_t), count_2012 = sum(total_sediment_2012_t), count_2013 = sum(total_sediment_2013_t), count_2014 = sum(total_sediment_2014_t), count_2015 = sum(total_sediment_2015_t), count_2016 = sum(total_sediment_2016_t)) 
+
+sediment %>%
+  group_by(major_basin) %>%
+  summarise(count_1985 = sum(total_sediment_1985_t), count_2007 = sum(total_sediment_2007_t), count_2009 = sum(total_sediment_2009_t), count_2010 = sum(total_sediment_2010_t), count_2011 = sum(total_sediment_2011_t), count_2012 = sum(total_sediment_2012_t), count_2013 = sum(total_sediment_2013_t), count_2014 = sum(total_sediment_2014_t), count_2015 = sum(total_sediment_2015_t), count_2016 = sum(total_sediment_2016_t)) 
+
+write_csv(tributary_basin_nitrogen, "tributary_basin_nitrogen.csv")
+write_csv(tributary_basin_phosphorous, "tributary_basin_phosphorous.csv")
+write_csv(tributary_basin_sediment, "tributary_basin_sediment.csv")
+
+sediment_sectors <- sediment %>%
+  group_by(source_sector) %>%
+  summarise(count_2007 = sum(total_sediment_2007_t), count_2009 = sum(total_sediment_2009_t), count_2010 = sum(total_sediment_2010_t), count_2011 = sum(total_sediment_2011_t), count_2012 = sum(total_sediment_2012_t), count_2013 = sum(total_sediment_2013_t), count_2014 = sum(total_sediment_2014_t), count_2015 = sum(total_sediment_2015_t), count_2016 = sum(total_sediment_2016_t)) 
+  
+
+nitrogen_sectors <- nitrogen %>%
+  group_by(source_sector) %>%
+  summarise(count_2007 = sum(total_n_2007_lb), count_2009 = sum(total_n_2009_lb), count_2010 = sum(total_n_2010_lb), count_2011 = sum(total_n_2011_lb), count_2012 = sum(total_n_2012_lb), count_2013 = sum(total_n_2013_lb), count_2014 = sum(total_n_2014_lb), count_2015 = sum(total_n_2015_lb), count_2016 = sum(total_n_2016_lb)) 
+
+phosphorous_sectors <- phosphorous %>%
+  group_by(source_sector) %>%
+  summarise(count_2007 = sum(total_p_2007_lb), count_2009 = sum(total_p_2009_lb), count_2010 = sum(total_p_2010_lb), count_2011 = sum(total_p_2011_lb), count_2012 = sum(total_p_2012_lb), count_2013 = sum(total_p_2013_lb), count_2014 = sum(total_p_2014_lb), count_2015 = sum(total_p_2015_lb), count_2016 = sum(total_p_2016_lb)) 
+
+write_csv(nitrogen_sectors, "nitrogen_sectors.csv")
+write_csv(sediment_sectors, "sediment_sectors.csv")
+write_csv(phosphorous_sectors, "phosphorous_sectors.csv")
+
+sediment %>%
+  group_by(county) %>%
+  summarise(count_2007 = sum(total_sediment_2007_t), count_2009 = sum(total_sediment_2009_t), count_2010 = sum(total_sediment_2010_t), count_2011 = sum(total_sediment_2011_t), count_2012 = sum(total_sediment_2012_t), count_2013 = sum(total_sediment_2013_t), count_2014 = sum(total_sediment_2014_t), count_2015 = sum(total_sediment_2015_t), count_2016 = sum(total_sediment_2016_t)) 
+
+merging <- nitrogen %>% left_join(sediment, by=c("county"))
+
+counties_sediment <- sediment %>%
+  group_by(county) %>%
+  summarise(count_s_2007 = sum(total_sediment_2007_t), count_s_2009 = sum(total_sediment_2009_t), count_s_2010 = sum(total_sediment_2010_t), count_s_2011 = sum(total_sediment_2011_t), count_s_2012 = sum(total_sediment_2012_t), count_s_2013 = sum(total_sediment_2013_t), count_s_2014 = sum(total_sediment_2014_t), count_s_2015 = sum(total_sediment_2015_t), count_s_2016 = sum(total_sediment_2016_t))
+
+counties_p <- phosphorous %>%
+  group_by(county) %>%
+  summarise(count_p_2007 = sum(total_p_2007_lb), count_p_2009 = sum(total_p_2009_lb), count_p_2010 = sum(total_p_2010_lb), count_p_2011 = sum(total_p_2011_lb), count_p_2012 = sum(total_p_2012_lb), count_p_2013 = sum(total_p_2013_lb), count_p_2014 = sum(total_p_2014_lb), count_p_2015 = sum(total_p_2015_lb), count_p_2016 = sum(total_p_2016_lb)) 
+
+counties_nitrogen <- nitrogen %>%
+  group_by(county) %>%
+  summarise(count_n_2007 = sum(total_n_2007_lb), count_n_2009 = sum(total_n_2009_lb), count_n_2010 = sum(total_n_2010_lb), count_n_2011 = sum(total_n_2011_lb), count_n_2012 = sum(total_n_2012_lb), count_n_2013 = sum(total_n_2013_lb), count_n_2014 = sum(total_n_2014_lb), count_n_2015 = sum(total_n_2015_lb), count_n_2016 = sum(total_n_2016_lb)) 
+
+merge1 <- counties_nitrogen %>% left_join(counties_p, by=c("county"))
+final_for_map <- merge1 %>% left_join(counties_sediment, by=c("county"))
+
+county_per_year <- final_for_map %>%
+  group_by(county) %>%
+  summarise(pollution_07 = sum(count_p_2007 + count_s_2007 + count_n_2007), pollution_09 = sum(count_p_2009 + count_n_2009 + count_s_2009), pollution_10 = sum(count_p_2010 + count_n_2010 + count_s_2010), pollution_11 = sum(count_p_2011 + count_n_2011 + count_s_2011), pollution_12 = sum(count_p_2012 + count_n_2012 + count_s_2012), pollution_13 = sum(count_p_2013 + count_n_2013 + count_s_2013), pollution_14 = sum(count_p_2014 + count_n_2014 + count_s_2014), pollution_15 = sum(count_p_2015 + count_n_2015 + count_s_2015), pollution_16 = sum(count_p_2016 + count_n_2016 + count_s_2016),)
+
+county_per_year
+
+```
